@@ -104,9 +104,17 @@ class MultiplayerServer
     return _playing(player_id, client, game) unless cmd
     case move = game.parse_move?(cmd)
     when Game::Move
-      maybe_winner = game.play(player_id, move)
+      game.play(player_id, move) # TODO: inspect returned value
+      # if move was valid
+      game.broadcast(PlayerMoved.new(player_id), @player2socket)
+      if st_info = game.state_info
+        game.broadcast(st_info, @player2socket)
+      end
+      # else
+        # let player know that the move was invalid
+      # end
       if game.status == Game::GameStatus::Over
-        game.broadcast(PlayerWon.new(maybe_winner), @player2socket)
+        game.broadcast(PlayerWon.new(game.winner?), @player2socket)
       end
       _playing(player_id, client, game)
     else
