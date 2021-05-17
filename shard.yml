@@ -1,0 +1,13 @@
+name: multiplayer
+version: 0.1.0
+
+authors:
+  - lbarasti <lbarasti@users.noreply.github.com>
+
+targets:
+  multiplayer:
+    main: src/multiplayer.cr
+
+crystal: 1.0.0
+
+license: MIT
