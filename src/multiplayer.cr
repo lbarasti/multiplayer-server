@@ -1,47 +1,8 @@
 require "socket"
-require "./games"
+require "./server/client_proxy"
+require "./server/game"
 include Game::Events
 include Game::Info
-
-# A thread-safe proxy for client operations
-class ClientProxy
-  getter ip : String
-  getter username : String
-  record Write, msg : Game::ServerEvent | Game::ServerInfo
-
-  def initialize(@socket : TCPSocket, @username : String)
-    @ip = @socket.remote_address.address
-
-    @ch = Channel(Write).new # (128)
-    spawn(name: player_id) {
-      loop do
-        case m = @ch.receive
-        in Write
-          @socket.puts(m.msg)
-        end
-      end
-    }
-  end
-
-  def puts(msg)
-    select
-    when @ch.send Write.new(msg)
-    when timeout(2.seconds)
-      # TODO: report timeout
-      ::puts "#{Fiber.current.name} Timed out"
-      @socket.close
-      @ch.close
-    end
-  end
-
-  def gets
-    @socket.gets || raise Exception.new("Received nil")
-  end
-
-  def player_id
-    "#{@ip}:#{@username}"
-  end
-end
 
 class MultiplayerServer
   @player2socket : Hash(PlayerId, ClientProxy) = Hash(PlayerId, ClientProxy).new
@@ -104,15 +65,12 @@ class MultiplayerServer
     return _playing(player_id, client, game) unless cmd
     case move = game.parse_move?(cmd)
     when Game::Move
-      game.play(player_id, move) # TODO: inspect returned value
-      # if move was valid
-      game.broadcast(PlayerMoved.new(player_id), @player2socket)
-      if st_info = game.state_info
-        game.broadcast(st_info, @player2socket)
-      end
-      # else
-        # let player know that the move was invalid
-      # end
+      game.play(player_id, move).try {
+        game.broadcast(PlayerMoved.new(player_id), @player2socket)
+        if st_info = game.state_info
+          game.broadcast(st_info, @player2socket)
+        end
+      }
       if game.status == Game::GameStatus::Over
         game.broadcast(PlayerWon.new(game.winner?), @player2socket)
       end
