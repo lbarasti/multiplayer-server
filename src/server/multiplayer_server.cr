@@ -1,6 +1,6 @@
 require "socket"
-require "./server/client_proxy"
-require "./server/game"
+require "./client_proxy"
+require "./game"
 include Game::Events
 include Game::Info
 
@@ -97,5 +97,3 @@ class MultiplayerServer
     end
   end
 end
-
-MultiplayerServer.new("localhost", 1234).listen

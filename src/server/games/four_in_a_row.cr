@@ -49,6 +49,7 @@ class FourInARow < Game
   end
 
   def state_info
+    return nil if @players.size < 2
     p1, p2 = @players.map(&.id)
     st = (0...Height).map { |r_idx|
       (0...Width).map { |c_idx|
