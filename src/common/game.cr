@@ -23,7 +23,9 @@ abstract class Game
 
   module Info
     record GameList < ServerInfo, msg : String
-    record GameStateInfo < ServerInfo, state : String
+    record GameStateInfo < ServerInfo, state : String do
+      getter state
+    end
   end
 
   getter id : GameId = Random::Secure.hex(1)
