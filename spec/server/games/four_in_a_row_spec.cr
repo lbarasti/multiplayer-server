@@ -135,8 +135,49 @@ describe FourInARow do
       "**o*o**\n" \
       "oo**o*o\n" \
       "*ooo***")
-    
+
     g.status.should eq Game::GameStatus::Over
     g.winner?.should eq nil
+  end
+
+  it "doesn't let players play out of turn" do
+    g = FourInARow.new
+    g.state_info.should eq nil
+    g.add_player(p1)
+
+    g.play!(p1.id, "a") # does not apply, awaiting p2
+    g.status.should eq Game::GameStatus::AwaitingPlayers
+
+    g.add_player(p2)
+
+    g.play!(p2.id, "c") # does not apply, out of turn
+    assert_all(g, '.')
+    g.play!(p1.id, "c")
+    g.play!(p1.id, "c") # does not apply, out of turn
+    assert_all(g, '.', except: [{2, 0}])
+
+    play_sequence(g, p2, p1, "dcdcdc")
+    g.status.should eq Game::GameStatus::Over
+    g.winner?.should eq p1.id
+
+    g.state_info.try(&.state).should eq(
+      ".......\n" \
+      ".......\n" \
+      "..*....\n" \
+      "..*o...\n" \
+      "..*o...\n" \
+      "..*o...")
+
+    play_sequence(g, p2, p1, "dcdcdc") # does not apply, game over
+    g.status.should eq Game::GameStatus::Over
+    g.winner?.should eq p1.id
+
+    g.state_info.try(&.state).should eq(
+      ".......\n" \
+      ".......\n" \
+      "..*....\n" \
+      "..*o...\n" \
+      "..*o...\n" \
+      "..*o...")
   end
 end

@@ -21,7 +21,7 @@ class FourInARow < Game
   end
 
   def play(player_id : PlayerId, move : Game::Move)
-    if player_id == @turn
+    if player_id == @turn && @status != GameStatus::Over
       move = move.as(Move)
       p1, p2 = @players.map(&.id)
       if @state[move.move.value].size < Height
@@ -66,7 +66,7 @@ class FourInARow < Game
     GameStateInfo.new(st)
   end
 
-  def full?
+  private def full?
     @state.values.reduce(0) { |acc, col| acc += col.size } >= Width * Height
   end
 
