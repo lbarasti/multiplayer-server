@@ -1,7 +1,7 @@
 require "./games/*"
 
 abstract class Game
-  GAME_TYPE = {"RPS" => RockPaperScissors, "C4" => FourInARow}
+  GAME_TYPE = { "RPS" => RockPaperScissors, "C4" => FourInARow, "Fight" => Fight }
 
   def play!(player_id, move)
     self.play player_id, self.parse_move?(move).not_nil!

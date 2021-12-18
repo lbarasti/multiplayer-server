@@ -31,11 +31,14 @@ class MultiplayerServer
     case cmd = client.gets
     when /new /
       _, game_type = cmd.not_nil!.split(" ")
-      game = Game::GAME_TYPE[game_type].new
-      @games[game.id] = game
-      game.add_player Player.new(player_id)
-      client.puts GameCreated.new(game.id)
-      _playing(player_id, client, game)
+      if game = Game::GAME_TYPE[game_type]?.try(&.new)
+        @games[game.id] = game
+        game.add_player Player.new(player_id)
+        client.puts GameCreated.new(game.id)
+        _playing(player_id, client, game)
+      else
+        client.puts InvalidCommandEntered.new("Unknown game")
+      end
     when /join /
       _, game_id = cmd.not_nil!.split(" ")
       if game = @games[game_id]?
