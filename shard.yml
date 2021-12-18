@@ -8,6 +8,10 @@ targets:
   multiplayer:
     main: src/multiplayer.cr
 
+dependencies:
+  crysterm:
+    github: crystallabs/crysterm
+
 crystal: 1.0.0
 
 license: MIT

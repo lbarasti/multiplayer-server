@@ -1,0 +1,42 @@
+version: 2.0
+shards:
+  ameba:
+    git: https://github.com/crystal-ameba/ameba.git
+    version: 0.13.4
+
+  crystallabs-helpers:
+    git: https://github.com/crystallabs/crystallabs-helpers.cr.git
+    version: 1.0.0
+
+  crysterm:
+    git: https://github.com/crystallabs/crysterm.git
+    version: 1.0.0+git.commit.01c9114fad13add07fd1560f09808766aa81940b
+
+  event_handler:
+    git: https://github.com/crystallabs/event_handler.git
+    version: 1.0.0
+
+  term-screen:
+    git: https://github.com/crystal-term/screen.git
+    version: 0.1.0+git.commit.96a06e1ee015e38013822dc31288a46d35056ed2
+
+  term_colors:
+    git: https://github.com/crystallabs/term_colors.git
+    version: 1.0.0
+
+  tput:
+    git: https://github.com/crystallabs/tput.git
+    version: 1.0.1+git.commit.5f692796c30f11d431087231a8572e07d36f75c7
+
+  unibilium:
+    git: https://github.com/crystallabs/unibilium.cr.git
+    version: 1.0.0
+
+  unibilium-shim:
+    git: https://github.com/crystallabs/unibilium-shim.cr.git
+    version: 1.0.0
+
+  w3m_image_display:
+    git: https://github.com/samuallb/w3mimagedisplay.git
+    version: 0.1.2
+
